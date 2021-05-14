@@ -16,29 +16,29 @@ Check Window
     Check Eyes Window                         Google Homepage
     [Teardown]                                Teardown
 
-Check Region
-    [Setup]                                   Setup                          Web - Check Region By Coordinates     ${URLS.google}
-    ${x}=                                     Get Horizontal Position        ${LOGO.xpath}
-    ${y}=                                     Get Vertical Position          ${LOGO.xpath}
-    Check Eyes Region                         ${x}                           ${y}                   400         200         Google Logo Coordinates
-    [Teardown]                                Teardown
-
-Check Region By Element
-    [Setup]                                   Setup                           Web - Check Region By Element     ${URLS.google}
-    #Debug
-    ${logo}=                                  Get WebElement                  ${LOGO.xpath}
-    Check Eyes Region By Element              ${logo}                         Google Logo Element
-    [Teardown]                                Teardown
-
-Check Region By Selector
-    [Setup]                                   Setup                           Web - Check Region By Selector     ${URLS.google}
-    Check Eyes Region By Selector             ${LOGO.css}                     Google Logo Selector               css
-    [Teardown]                                Teardown
-
-Check iFrame
-    [Setup]                                   Setup                            Web - Check Region iFrame                ${URLS.w3}
-    Check Eyes Region In Frame By Selector    iframeResult                     Frame Elements
-    [Teardown]                                Teardown
+#Check Region
+#    [Setup]                                   Setup                          Web - Check Region By Coordinates     ${URLS.google}
+#    ${x}=                                     Get Horizontal Position        ${LOGO.xpath}
+#    ${y}=                                     Get Vertical Position          ${LOGO.xpath}
+#    Check Eyes Region                         ${x}                           ${y}                   400         200         Google Logo Coordinates
+#    [Teardown]                                Teardown
+#
+#Check Region By Element
+#    [Setup]                                   Setup                           Web - Check Region By Element     ${URLS.google}
+#    #Debug
+#    ${logo}=                                  Get WebElement                  ${LOGO.xpath}
+#    Check Eyes Region By Element              ${logo}                         Google Logo Element
+#    [Teardown]                                Teardown
+#
+#Check Region By Selector
+#    [Setup]                                   Setup                           Web - Check Region By Selector     ${URLS.google}
+#    Check Eyes Region By Selector             ${LOGO.css}                     Google Logo Selector               css
+#    [Teardown]                                Teardown
+#
+#Check iFrame
+#    [Setup]                                   Setup                            Web - Check Region iFrame                ${URLS.w3}
+#    Check Eyes Region In Frame By Selector    iframeResult                     Frame Elements
+#    [Teardown]                                Teardown
 
 *** Keywords ***
 

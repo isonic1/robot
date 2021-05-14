@@ -52,21 +52,15 @@ class SessionKeywords(object):
         height=None,
         matchlevel=None,
         enable_eyes_log=None,
-        enable_http_debug_log=None,
-        baselinename=None,
         batch=None,
         batchnotifications=False,
         batchsequencename=None,
-        branchname=None,
-        parentbranch=None,
         serverurl=None,
         force_full_page_screenshot=None,
         stitchmode=None,
         matchtimeout=None,
         save_new_tests=True,
-        wait_before_screenshots=None,
-        send_dom=None,
-        stitchcontent=False
+        wait_before_screenshots=None
     ):
         """
         Starts a session (=test) with Applitools.
@@ -124,8 +118,6 @@ class SessionKeywords(object):
             enable_eyes_log = self.library_arguments["enable_eyes_log"]
         if serverurl is None:
             serverurl = self.library_arguments["serverurl"]
-        if save_new_tests is None:
-            save_new_tests = self.library_arguments["save_new_tests"]
         if matchtimeout is None:
             matchtimeout = self.library_arguments["matchtimeout"]
 
@@ -134,13 +126,13 @@ class SessionKeywords(object):
         # else:
         #     variables.eyes = Eyes(serverurl)
 
-        # if runner is None or runner == 'ClassicRunner':
-        #     runner = ClassicRunner()
-        #
-        # if runner == 'VisualGridRunner':
-        #     runner = VisualGridRunner(variables.concurrency)
+        if runner is None or runner == 'ClassicRunner':
+            runner = ClassicRunner()
 
-        variables.eyes = Eyes()
+        if runner == 'VisualGridRunner':
+            runner = VisualGridRunner(variables.concurrency)
+
+        variables.eyes = Eyes(runner)
 
         variables.eyes.api_key = apikey
 
@@ -159,9 +151,6 @@ class SessionKeywords(object):
         if enable_eyes_log is not None:
             logger.set_logger(StdoutLogger(True))
 
-        if baselinename is not None:
-            variables.eyes.baseline_branch_name = baselinename
-
         if batch is not None:
             new_batch = BatchInfo(batch)
         else:
@@ -172,6 +161,7 @@ class SessionKeywords(object):
             new_batch.sequence_name = batchsequencename or variables.batchsequencename or variables.batchname or batch
         if variables.batchid is not None:
             new_batch.id = variables.batchid
+
         variables.eyes.batch = new_batch
         variables.batches.append(new_batch)
 
@@ -179,24 +169,18 @@ class SessionKeywords(object):
             variables.eyes.server_url(serverurl)
         if matchlevel is not None:
             variables.eyes.match_level = utils.get_match_level(matchlevel)
-        if parentbranch is not None:
-            variables.eyes.parent_branch_name = parentbranch
-        if branchname is not None:
-            variables.eyes.branch_name = branchname
-        if stitchmode is not None:
-            variables.eyes.stitch_mode = utils.get_stitch_mode(stitchmode)
         if matchtimeout is not None:
             variables.eyes.match_timeout = int(matchtimeout)
         if force_full_page_screenshot is not None:
             variables.eyes.force_full_page_screenshot = force_full_page_screenshot
-        if save_new_tests is not None:
-            variables.eyes.save_new_tests = save_new_tests
         if wait_before_screenshots is not None:
             variables.eyes.wait_before_screenshots = int(wait_before_screenshots)
-        if send_dom is not None:
-            variables.eyes.send_dom = send_dom
-        if stitchcontent is not False:
-            variables.stitchcontent = stitchcontent
+
+        # if runner == 'VisualGridRunner':
+        #     conf = variables.eyes.get_configuration()
+        #
+        #     conf = variables.visual_grid_browsers()
+        #     variables.eyes.set_configuration(conf)
 
         if width is None and height is None:
             variables.driver = variables.eyes.open(driver, appname, testname)

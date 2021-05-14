@@ -1,13 +1,26 @@
 import time
 from datetime import datetime
+from applitools.selenium import ( Configuration,
+                                  BrowserType,
+                                  Configuration,
+                                  IosDeviceInfo,
+                                  IosDeviceName,
+                                  ScreenOrientation
+                                  )
 
 
 def create_batch_id():
     timestamp = int(time.mktime(datetime.now().timetuple()))
     return str(timestamp)
 
-# def visual_grid_browsers():
-#
+
+def visual_grid_browsers():
+    conf = Configuration()
+    conf.environment_name = "Desktop"
+    conf.add_browser(1200, 800, BrowserType.CHROME)  # Linux Desktop
+    conf.add_browser(1200, 800, BrowserType.SAFARI)  # Mac OS Desktop
+    conf.add_browser(1200, 800, BrowserType.FIREFOX) # Linux Desktop
+    return conf
 
 
 def init():
