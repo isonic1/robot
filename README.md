@@ -7,7 +7,7 @@
 - [Introduction](#Introduction)
 - [Requirements](#Requirements)
 - [Installation](#Installation)
-- [Execute a Test](#Execute a Test)
+- [Execute](#Execute)
 - [Directory Layout](#Directory%20Layout)
 - [Usage](#Usage)
 - [Running the Demo](#Running%20the%20Demo)
@@ -56,14 +56,15 @@ Alternatively you could download the source code, package it and install using n
     python setup.py sdist
     pip install dist/robotframework-eyeslibrary4-4.20.tar.gz        
     
-Note: The zipped package can be shared with users and installed in other locations.
+* Note: The zipped package can be shared with users and installed in other locations.
 
 * The resources folder you will see additional files where you can change the settings of your choosing.
 * Set your Applitools API Key and Server URL in the tests > acceptance > resources > common.robot file.
 
-## Execute a Test
+## Execute
 * Run Example: `robot tests/acceptance/web.robot`
-Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
+
+* Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
 
 Default Browsers Set:
 
@@ -76,7 +77,7 @@ Default Browsers Set:
     conf.add_device_emulation(DeviceName.Nexus_10, ScreenOrientation.PORTRAIT)  # Linux Chrome Desktop
 `
 
-Note: Currently, only the web.robot, android_app.robot, android_browser.robot, ios_app.robot and ios_browser.robot tests work.
+* Note: Currently, only the web.robot, android_app.robot, android_browser.robot, ios_app.robot and ios_browser.robot tests work.
 
 ## Directory Layout
 
