@@ -1,12 +1,12 @@
 import time
 from datetime import datetime
-from applitools.selenium import ( Configuration,
-                                  BrowserType,
-                                  Configuration,
-                                  IosDeviceInfo,
-                                  IosDeviceName,
-                                  ScreenOrientation
-                                  )
+from applitools.selenium import (
+                                 BrowserType,
+                                 IosDeviceInfo,
+                                 IosDeviceName,
+                                 ScreenOrientation,
+                                 DeviceName
+                                )
 
 
 def create_batch_id():
@@ -14,32 +14,30 @@ def create_batch_id():
     return str(timestamp)
 
 
-def visual_grid_browsers():
-    conf = Configuration()
-    conf.environment_name = "Desktop"
-    conf.add_browser(1200, 800, BrowserType.CHROME)  # Linux Desktop
-    conf.add_browser(1200, 800, BrowserType.SAFARI)  # Mac OS Desktop
-    conf.add_browser(1200, 800, BrowserType.FIREFOX) # Linux Desktop
+def visual_grid_browsers(conf):
+    conf.add_browser(1200, 800, BrowserType.CHROME)         # Linux Desktop
+    conf.add_browser(1200, 800, BrowserType.SAFARI)         # Mac OS Desktop
+    conf.add_browser(1200, 800, BrowserType.FIREFOX)        # Linux Desktop
+    conf.add_browser(1200, 800, BrowserType.EDGE_CHROMIUM)  # Linux Windows 10
+    conf.add_browser(800, 800, BrowserType.EDGE_CHROMIUM)  # Linux Windows 10
+    conf.add_browser(IosDeviceInfo(IosDeviceName.iPhone_X, ScreenOrientation.PORTRAIT))  # iOS iPhone X simulator
+    conf.add_device_emulation(DeviceName.Nexus_10, ScreenOrientation.PORTRAIT)  # Linux Chrome Desktop
     return conf
 
 
 def init():
     global eyes
     global driver
-    global batches
-    global batchname
-    global batchsequencename
+    global batch_default_name
     global batchid
-    global stitchcontent
     global eyes_logs
     global concurrency
+    global stitchcontent
 
     eyes = None
     driver = None
-    batches = []
-    batchname = None
-    batchsequencename = batchname
+    batch_default_name = "My Robot Tests"
     batchid = create_batch_id
-    stitchcontent = False
     eyes_logs = True
     concurrency = 10
+    stitchcontent = None

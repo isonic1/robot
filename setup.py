@@ -17,14 +17,11 @@ with io.open("README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="robotframework-eyeslibrary",
+    name="robotframework-eyeslibrary4",
     version=__version__,
     description="Visual verification testing library for Robot Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Joel Oliveira, Sofia Nunes, Jonathan Ward",
-    author_email="<oliveira.joel@gmail.com>, <sofia.nunes@criticalsoftware.com>, <jonward@adobe.com>",
-    url="https://github.com/joel-oliveira/EyesLibrary",
     license="Apache License 2.0",
     keywords="robotframework testing testautomation eyes-selenium selenium appium visual-verification",
     platforms="any",
@@ -41,7 +38,6 @@ setup(
     install_requires=[
         "robotframework >= 3.2.1",
         "eyes-selenium >= 4.20.0",
-        "six > 1.0.0, < 2",
         "robotframework-seleniumlibrary",
         "robotframework-appiumlibrary",
         "robotframework-debuglibrary"

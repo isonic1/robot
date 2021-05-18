@@ -32,9 +32,6 @@ from robot.api import logger as loggerRobot
 from datetime import datetime
 from ..version import __version__
 from EyesLibrary.resources import variables, utils
-import six
-import time
-from datetime import datetime
 
 
 class SessionKeywords(object):
@@ -53,14 +50,8 @@ class SessionKeywords(object):
         matchlevel=None,
         enable_eyes_log=None,
         batch=None,
-        batchnotifications=False,
-        batchsequencename=None,
         serverurl=None,
-        force_full_page_screenshot=None,
-        stitchmode=None,
-        matchtimeout=None,
-        save_new_tests=True,
-        wait_before_screenshots=None
+        force_full_page_screenshot=None
     ):
         """
         Starts a session (=test) with Applitools.
@@ -68,7 +59,8 @@ class SessionKeywords(object):
         Some of the following arguments may also be defined on library import.
         See `Before running tests` or `Importing`.
 
-            | =Arguments=                       | =Description=                                                                                                                               |
+            | =Arguments=                       | =Description=
+            | Runner (str)                      | *Mandatory* - ClassicRunner or VisualGridRunner                                                                                             |                                                                                                              |
             | API Key (str)                     | *Mandatory* - User's Applitools Eyes key                                                                                                    |
             | Application Name (str)            | *Mandatory* - The name of the application under test                                                                                        |
             | Test Name (str)                   | *Mandatory* - The test name                                                                                                                 |  
@@ -77,23 +69,10 @@ class SessionKeywords(object):
             | Height (int)                      | The height of the browser window e.g. 1000                                                                                                  |
             | Match Level (str)                 | The match level for the comparison of this test's checkpoints - can be STRICT, LAYOUT, CONTENT or EXACT                                     |
             | Enable Eyes Log (bool)            | Determines if the trace logs of Applitools Eyes SDK are activated for this session                                                          |
-            | Enable HTTP Debug Log (bool)      | The HTTP Debug logs will not be included by default. To activate, pass 'True' in the variable                                               |
-            | Baseline Name (str)               | Name of the branch where the baseline reference will be taken from and where new and accepted steps will be saved to                        |
             | Batch (str or BatchInfo)          | The desired batch. See `Group tests into batches`                                                                                           |
-            | Batch Notifications (bool)        | Send batch notifications after execution of tests.                                                                                          |
-            | Batch Sequence Name (str)         | The desired batch sequence name for Insights.                                                                                               |
-            | Branch Name (str)                 | The branch to use to check test                                                                                                             |
-            | Parent Branch (str)               | Parent Branch to base the new Branch on                                                                                                     |
             | Server URL (str)                  | The URL of the Eyes server. If not provided then your test will run on the public cloud                                                     |
             | Force Full Page Screenshot (bool) | Will force the browser to take a screenshot of whole page                                                                                   |
             | Stitch Mode (str)                 | Type of stitching used for full page screenshots - can be CSS or SCROLL                                                                     |
-            | Match Timeout (int)               | Determines how much time in milliseconds Eyes continues to retry the matching before declaring a mismatch on this test checkpoints          |
-            | Hide Scrollbars (bool)            | Sets if the scrollbars are hidden this session's tests, by passing 'True' or 'False' in the variable                                        |
-            | Save New Tests (bool)             | Sets if the new checkpoints on this session are automatically accepted, by passing 'True' or 'False' in the variable                        |
-            | Wait Before Screenshots (int)     | Determines the number of milliseconds that Eyes will wait before capturing a screenshot on this test checkpoints                            |
-            | Send DOM (bool)                   | Sets if DOM information should be sent for this session's checkpoints                                                                       |    
-            | Stitch Content (bool)             | If this test checkpoint's elements/region are scrollable, determines if Eyes will scroll this them to take a full region/element screenshot |    
-            | Is Disabled (bool)                | Determines whether or not interactions with Eyes will be silently ignored for this test                                                     |    
 
         *Mandatory Arguments:* They may be defined through this keyword, or when importing the library.
         In order to run a test, provide at least the API Key, Application Name and Test Name.
@@ -118,23 +97,20 @@ class SessionKeywords(object):
             enable_eyes_log = self.library_arguments["enable_eyes_log"]
         if serverurl is None:
             serverurl = self.library_arguments["serverurl"]
-        if matchtimeout is None:
-            matchtimeout = self.library_arguments["matchtimeout"]
+        if runner is None:
+            runner = self.library_arguments["runner"]
 
-        # if serverurl is None:
-        #     variables.eyes = Eyes()
-        # else:
-        #     variables.eyes = Eyes(serverurl)
+        mode = None
 
         if runner is None or runner == 'ClassicRunner':
-            runner = ClassicRunner()
+            print("\nRunning ClassicRunner...\n")
+            mode = ClassicRunner()
 
         if runner == 'VisualGridRunner':
-            runner = VisualGridRunner(variables.concurrency)
+            print("\nRunning VisualGridRunner...\n")
+            mode = VisualGridRunner(variables.concurrency)
 
-        variables.eyes = Eyes(runner)
-
-        variables.eyes.api_key = apikey
+        variables.eyes = Eyes(mode)
 
         try:
             libraryInstance = BuiltIn().get_library_instance(library)
@@ -146,52 +122,43 @@ class SessionKeywords(object):
         except RuntimeError:
             raise Exception("%s instance not found" % library)
 
-        # utils.manage_logging(enable_eyes_log, enable_http_debug_log)
+        # utils.manage_logging(enable_eyes_log)
 
         if enable_eyes_log is not None:
             logger.set_logger(StdoutLogger(True))
 
         if batch is not None:
             new_batch = BatchInfo(batch)
+            sequence_name = batch
         else:
-            new_batch = BatchInfo(variables.batchname)
-        if batchnotifications is not False:
-            new_batch.notify_on_completion = True
-        if batchsequencename is not None:
-            new_batch.sequence_name = batchsequencename or variables.batchsequencename or variables.batchname or batch
-        if variables.batchid is not None:
-            new_batch.id = variables.batchid
+            new_batch = BatchInfo(variables.batch_default_name)
+            sequence_name = variables.batch_default_name
 
-        variables.eyes.batch = new_batch
-        variables.batches.append(new_batch)
+        new_batch.sequence_name = sequence_name
+        new_batch.id = variables.batchid
 
-        if serverurl is not None:
-            variables.eyes.server_url(serverurl)
-        if matchlevel is not None:
-            variables.eyes.match_level = utils.get_match_level(matchlevel)
-        if matchtimeout is not None:
-            variables.eyes.match_timeout = int(matchtimeout)
-        if force_full_page_screenshot is not None:
-            variables.eyes.force_full_page_screenshot = force_full_page_screenshot
-        if wait_before_screenshots is not None:
-            variables.eyes.wait_before_screenshots = int(wait_before_screenshots)
+        config = Configuration()
+        config.api_key = apikey
+        config.app_name = str(appname)
+        config.test_name = str(testname)
+        if width is not None and height is not None:
+            config.set_viewport_size({'width': int(width), 'height': int(height)})
+        config.batch = new_batch
+        config.server_url = serverurl
+        config.set_match_level(utils.get_match_level(matchlevel))
+        config.force_full_page_screenshot = force_full_page_screenshot or True
 
-        # if runner == 'VisualGridRunner':
-        #     conf = variables.eyes.get_configuration()
-        #
-        #     conf = variables.visual_grid_browsers()
-        #     variables.eyes.set_configuration(conf)
-
-        if width is None and height is None:
-            variables.driver = variables.eyes.open(driver, appname, testname)
+        if runner == 'VisualGridRunner':
+            config = variables.visual_grid_browsers(config)
+            variables.eyes.set_configuration(config)
         else:
-            variables.driver = variables.eyes.open(
-                driver, appname, testname, {"width": int(width), "height": int(height)}
-            )
+            variables.eyes.set_configuration(config)
 
-    def close_eyes_session(
-        self, enable_http_debug_log=None, raise_exception=True,
-    ):
+        # print("\nMY CONFIG: %s\n" % config)
+
+        variables.eyes.open(driver)
+
+    def close_eyes_session(self, raise_exception=True):
         """
         Closes a session and returns the results of the session.
         If a test is running, aborts it. Otherwise, does nothing.
@@ -204,77 +171,10 @@ class SessionKeywords(object):
         *Example:*
             | Close Eyes Session | ${false} |                                 
         """
-        # utils.manage_logging(enable_http_debug_log)
 
-        results = variables.eyes.close(raise_exception)
-        variables.eyes.abort_if_not_closed()
-
-        # utils.manage_logging(False, False)
-
-    def abort_eyes_session_if_not_closed(
-        self, enable_http_debug_log=None
-    ):
-        """
-        Stops execution without calling close(). 
-        This method does all the cleanup normally done by close.
-        If this method is called, and close has not been called, then the test will have a status of Aborted in the Test Manager.
-
-            | =Arguments=                  | =Description=                                                                                 |
-            | Enable Eyes Log (bool)       | The Eyes logs will not be included by default. To activate, pass 'True' in the variable       |
-            | Enable HTTP Debug Log (bool) | The HTTP Debug logs will not be included by default. To activate, pass 'True' in the variable |
-
-        *Example:*
-            | Abort Eyes Session If Not Closed |                             
-        """
-        # utils.manage_logging(enable_http_debug_log)
-
-        variables.eyes.abort_if_not_closed()
-
-        # utils.manage_logging(False, False)
-
-    def create_eyes_batch(self, name=None, started_at=None, batch_id=None):
-        """
-        Returns a BatchInfo object that may be used as batch argument on `Open Eyes Session`. For more information, read `Group tests into batches`.
-
-            | =Arguments=                  | =Description=                                                                              |
-            | Name (str)                   | The name of the batch                                                                      |
-            | Started At (str or datetime) | The date and time that will be displayed in the Test Manager as the batch start time *(*)* |
-            | Batch ID (str)               | This argument groups together tests ran in different executions                            |
-
-        The *Started At* argument may be passed as:
-        - String: YYYY-mm-dd HH:MM:SS
-        - Datetime variable: See [https://robotframework.org/robotframework/latest/libraries/DateTime.html|DateTime library]
-
-        *(*)* Currently, due to a problem with Eyes, the Test Manager always shows the default batch start time, even when setting a custom one.
-
-        *Example:*
-            | ${batch}= | Create Eyes Batch |      
-        """
-
-        if started_at is not None:
-            if type(started_at) is six.text_type:
-                started_at = str(started_at)
-
-            if isinstance(started_at, str):
-                started_at = datetime.strptime(started_at, "%Y-%m-%d %H:%M:%S")
-
-        if name is not None and started_at is not None:
-            batch = BatchInfo(name, started_at)
-        elif name is not None:
-            batch = BatchInfo(name)
-        elif started_at is not None:
-            batch = BatchInfo(None, started_at)
-        else:
-            batch = BatchInfo()
-
-        if batch_id is not None:
-            batch.id = batch_id
-
-        # if batchnotifications is not None:
-        #     batch.batchnotifications=True
-        #
-        # if batchsequencename is not None:
-        #     batch.sequence_name=name
-
-        return batch
+        try:
+            variables.eyes.close_async()
+            variables.eyes._runner.get_all_test_results(raise_exception)
+        finally:
+            variables.eyes.abort_if_not_closed()
 
