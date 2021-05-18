@@ -64,7 +64,7 @@ Alternatively you could download the source code, package it and install using n
 ## Execute
 * Run Example: `robot tests/acceptance/web.robot`
 
-* Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
+* Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable in SETUP 'Open Eyes Session'. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
 
 Default Browsers Set:
 
