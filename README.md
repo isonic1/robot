@@ -49,6 +49,7 @@ The following versions were used to test the library:
 * robotframework-debuglibrary
 
 ## Installation
+**This is a standalone installation and is not published in pip PyPI!**
 
 python setup.py install
 Alternatively you could download the source code, package it and install using next commands:
@@ -57,7 +58,6 @@ Alternatively you could download the source code, package it and install using n
     pip install dist/robotframework-eyeslibrary4-4.20.tar.gz        
     
 * Note: The zipped package can be shared with users and installed in other locations.
-
 * The resources folder you will see additional files where you can change the settings of your choosing.
 * Set your Applitools API Key and Server URL in the tests > acceptance > resources > common.robot file.
 
