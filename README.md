@@ -15,12 +15,12 @@
 - [Getting Help](#Getting%20Help)
 - [Credits](#Credits)
 
-##Disclaimer
+## Disclaimer
 This example's sole purpose is to show you how to implement the Applitools Python Selenium SDK into Robot. Robot like Cucumber is an abstraction library on top of Selenium Python. The Applitools Selenium Python SDK is fully compatible with Robot. However, it's up to you the individual utilizing Robot to update your framework to incorporate the available Eyes SDK methods Applitools provides. 
 
 With that said, as mentioned this is only an example and **it will not be maintained or supported by myself or individuals at Applitools**. Feel free to clone it, fork it and do what you will with this example. Happy testing!
 
-#Assumption
+## Assumption
 * You have created an account on Applitools and have a corresponding API Key.
 * You are familiar with the Robot framework and Selenium.
 * You are familiar with Appium and have **all the required Appium dependencies** installed. 
