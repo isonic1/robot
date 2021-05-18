@@ -51,17 +51,16 @@ The following versions were used to test the library:
 ## Installation
 **This is a standalone installation and is not published in pip PyPI!**
 
-python setup.py install
-Alternatively you could download the source code, package it and install using next commands:
 
     python setup.py sdist
     pip install dist/robotframework-eyeslibrary4-4.20.tar.gz        
     
 * Note: The zipped package can be shared with users and installed in other locations.
+
+## Execute
 * The resources folder you will see additional files where you can change the settings of your choosing.
 * Set your Applitools API Key and Server URL in the tests > acceptance > resources > common.robot file.
 
-## Execute
 * Run Example: `robot tests/acceptance/web.robot`
 
 * Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable in SETUP 'Open Eyes Session'. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
