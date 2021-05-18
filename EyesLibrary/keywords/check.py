@@ -71,20 +71,8 @@ class CheckKeywords:
 
         original_properties = utils.save_current_properties()
         utils.update_properties(force_full_page_screenshot, enable_http_debug_log, hidescrollbars, wait_before_screenshots, matchlevel, None)
-        
-        # Temporary workaround in order to capture the correct element on Safari
-        # Element coordinate y doesn't take the address bar height into consideration, so it has to be added
-        # Current address bar height: 71
-        if variables.eyes.host_app == "Safari" and variables.eyes.host_os == "iOS":
-            size = variables.driver.get_window_size("current")
 
-            variables.eyes.check_region(
-                Region(0, 71, size.__getitem__("width"), size.__getitem__("height")),
-                name,
-                matchtimeout
-            )
-        else:
-            variables.eyes.check(name, Target.window().timeout(matchtimeout))
+        variables.eyes.check(name, Target.window().timeout(matchtimeout))
 
         utils.update_properties(**original_properties)
       
@@ -139,9 +127,7 @@ class CheckKeywords:
         self,
         element,
         name,
-        enable_http_debug_log=False,
         matchtimeout=None,
-        target=None,
         hidescrollbars=None,
         wait_before_screenshots=None,
         matchlevel=None
@@ -153,16 +139,10 @@ class CheckKeywords:
             | =Arguments=                   | =Description=                                                                                                                                                   |
             | Element (WebElement)          | *Mandatory* - The Web Element to be checked                                                                                                                     |
             | Name (str)                    | *Mandatory* - Name that will be given to region in Eyes                                                                                                         |
-            | Enable Eyes Log (bool)        | Determines if the trace logs of Applitools Eyes SDK are activated for this checkpoint. Overrides the argument set on `Open Eyes Session`                        |
-            | Enable HTTP Debug Log (bool)  | The HTTP Debug logs will not be included by default. To activate, pass 'True' in the variable                                                                   |
             | Match Timeout (int)           | Determines how much time in milliseconds  Eyes continue to retry the matching before declaring a mismatch on this test                                          |
-            | Target (Target)               | The intended Target. See `Defining Ignore and Floating Regions`                                                                                                 |
             | Hide Scrollbars (bool)        | Sets if the scrollbars are hidden in the checkpoint, by passing 'True' or 'False' in the variable                                                               |
             | Wait Before Screenshots (int) | Determines the number of milliseconds that Eyes will wait before capturing the screenshot of this checkpoint. Overrides the argument set on `Open Eyes Session` |
-            | Send DOM (bool)               | Sets if DOM information should be sent for this checkpoint                                                                                                      |    
-            | Stitch Content (bool)         | Determines if Eyes will scroll this element to take a full element screenshot, when the element is scrollable                                                   |    
             | Match Level (str)             | The match level for the comparison of this checkpoint - can be STRICT, LAYOUT, CONTENT or EXACT                                                                 |
-            | Is Disabled (bool)            | Determines whether or not interactions with Eyes will be silently ignored for this checkpoint                                                                   |    
 
         *Example:*
             | ${element}=                  | Get Element | //*[@id="hplogo"] |
@@ -176,30 +156,10 @@ class CheckKeywords:
         original_properties = utils.save_current_properties()
         utils.update_properties(None, hidescrollbars, wait_before_screenshots, matchlevel)
 
-        # Temporary workaround in order to capture the correct element on Safari
-        # Element coordinate y doesn't take the address bar height into consideration, so it has to be added
-        # Current address bar height: 71
-        if variables.eyes.host_app == "Safari" and variables.eyes.host_os == "iOS":
-            location = element.location
-            size = element.size
-
-            variables.eyes.check_region(
-                Region(
-                    location.__getitem__("x"),
-                    location.__getitem__("y") + 71,
-                    size.__getitem__("width"),
-                    size.__getitem__("height"),
-                ),
-                name,
-                matchtimeout,
-                target,
-                variables.stitchcontent,
-            )
-        else:
-            variables.eyes.check(name, Target.region(element)
-                                 .timeout(matchtimeout)
-                                 .match_level(matchlevel)
-                                 )
+        variables.eyes.check(name, Target.region(element)
+                             .timeout(matchtimeout)
+                             .match_level(matchlevel)
+                             )
 
         utils.update_properties(**original_properties)
 
@@ -226,16 +186,11 @@ class CheckKeywords:
             | Value (str)                   | *Mandatory* - The specific value of the selector. e.g. a CSS SELECTOR value .first.expanded.dropdown                                                      |
             | Name (str)                    | *Mandatory* - Name that will be given to region in Eyes                                                                                                   |
             | Selector (str)                | *Mandatory* - The strategy to locate the element. The supported selectors are specified in `Using Selectors`                                              |
-            | Enable Eyes Log (bool)        | Determines if the trace logs of Applitools Eyes SDK are activated for this checkpoint. Overrides the argument set on `Open Eyes Session`                  |
-            | Enable HTTP Debug Log (bool)  | The HTTP Debug logs will not be included by default. To activate, pass 'True' in the variable                                                             |
             | Match Timeout (int)           | Determines how much time in milliseconds Eyes continue to retry the matching before declaring a mismatch on this checkpoint                               |
             | Target (Target)               | The intended Target. See `Defining Ignore and Floating Regions`                                                                                           |
             | Hide Scrollbars (bool)        | Sets if the scrollbars are hidden in the checkpoint, by passing 'True' or 'False' in the variable                                                         |
             | Wait Before Screenshots (int) | Determines the number of milliseconds that Eyes will wait before capturing the screenshot of this test. Overrides the argument set on `Open Eyes Session` |
-            | Send DOM (bool)               | Sets if DOM information should be sent for this checkpoint                                                                                                |    
-            | Stitch Content (bool)         | Determines if Eyes will scroll this element to take a full element screenshot, when the element is scrollable                                             |    
             | Match Level (str)             | The match level for the comparison of this checkpoint - can be STRICT, LAYOUT, CONTENT or EXACT                                                           |
-            | Is Disabled (bool)            | Determines whether or not interactions with Eyes will be silently ignored for this checkpoint                                                             |    
 
         *Example:*
             | Check Eyes Region By Selector | .first.expanded.dropdown | Css Element | css selector | ${true} | ${true} | 5000 |
@@ -250,30 +205,10 @@ class CheckKeywords:
         
         selector_strategy = utils.get_selector_strategy(selector)
 
-        # Temporary workaround in order to capture the correct element on Safari
-        # Element coordinate y doesn't take the address bar height into consideration, so it has to be added
-        # Current address bar height: 71
-        if variables.eyes.host_app == "Safari" and variables.eyes.host_os == "iOS":
-            element = variables.driver.find_element(selector_strategy, value)
-            location = element.location
-            size = element.size
-
-            variables.eyes.check_region(
-                Region(
-                    location.__getitem__("x"),
-                    location.__getitem__("y") + 71,
-                    size.__getitem__("width"),
-                    size.__getitem__("height"),
-                ),
-                name,
-                matchtimeout,
-                variables.stitchcontent,
-            )
-        else:
-            variables.eyes.check(name, Target.region([selector_strategy, value])
-                                 .timeout(matchtimeout)
-                                 .match_level(matchlevel)
-                                 )
+        variables.eyes.check(name, Target.region([selector_strategy, value])
+                             .timeout(matchtimeout)
+                             .match_level(matchlevel)
+                             )
 
         utils.update_properties(**original_properties)
 
@@ -326,14 +261,6 @@ class CheckKeywords:
 
         original_properties = utils.save_current_properties()
         utils.update_properties(None, enable_http_debug_log, hidescrollbars)
-
-        # if type(framereference) is six.text_type:
-        #     try:
-        #         framereference = int(framereference)
-        #     except:
-        #         framereference = str(framereference)
-
-        # selector_strategy = utils.get_selector_strategy(selector)
 
         variables.eyes.check(name, Target.frame(framereference).timeout(matchtimeout))
 

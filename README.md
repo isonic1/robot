@@ -2,9 +2,12 @@
 
 #### Table of Contents
 
+- [Disclaimer](#Disclaimer)
+- [Assumptions](#Assumptions)
 - [Introduction](#Introduction)
 - [Requirements](#Requirements)
 - [Installation](#Installation)
+- [Execute a Test](#Execute a Test)
 - [Directory Layout](#Directory%20Layout)
 - [Usage](#Usage)
 - [Running the Demo](#Running%20the%20Demo)
@@ -12,12 +15,20 @@
 - [Getting Help](#Getting%20Help)
 - [Credits](#Credits)
 
+##Disclaimer
+This example's sole purpose is to show you how to implement the Applitools Python Selenium SDK into Robot. Robot like Cucumber is an abstraction library on top of Selenium Python. The Applitools Selenium Python SDK is fully compatible with Robot. However, it's up to you the individual utilizing Robot to update your framework to incorporate the available Eyes SDK methods Applitools provides. 
+
+With that said, as mentioned this is only an example and **it will not be maintained or supported by myself or individuals at Applitools**. Feel free to clone it, fork it and do what you will with this example. Happy testing!
+
+#Assumption
+* You have created an account on Applitools and have a corresponding API Key.
+* You are familiar with the Robot framework and Selenium.
+* You are familiar with Appium and have **all the required Appium dependencies** installed. 
+
 ## Introduction
 
-EyesLibrary is a Robot Framework Library to automate visual software testing verification. EyesLibrary uses a Python SDK called [Eyes-Selenium](https://pypi.python.org/pypi/eyes-selenium) from the tool [Applitools Eyes](http://applitools.com/), and can be used with the [SeleniumLibrary](https://github.com/robotframework/SeleniumLibrary) and/or the [AppiumLibrary](https://github.com/serhatbolsu/robotframework-appiumlibrary) .
-
-This library is a fork of [Robot-AppEyes](https://github.com/NaviNet/Robot-AppEyes).
-In order to use EyesLibrary, you are required to [sign up](https://applitools.com/sign-up/) for a free account with Applitools. See the [Usage](https://github.com/joel-oliveira/EyesLibrary#usage) section.
+This library is a clone of [EyesLibrary](https://joel-oliveira.github.io/EyesLibrary/) and the great work they did. I removed some existing capabilities to make this a leaner minimal viable product. It's been updated to work with the latest dependency versions in setup.py and to use the Applitools Ultra Fast Grid. 
+In order to use EyesLibrary4-4.20, you are required to [sign up](https://applitools.com/sign-up/) for a free account with Applitools. See the [Usage](https://github.com/joel-oliveira/EyesLibrary#usage) section.
 
 - Information about EyesLibrary keywords can be found on the [Keyword Documentation](https://joel-oliveira.github.io/EyesLibrary/) page.
 
@@ -31,32 +42,41 @@ In order to use EyesLibrary, you are required to [sign up](https://applitools.co
 
 The following versions were used to test the library:
 
-- Python 2.7.14 or 3.6.0
-- Robot Framework 3.1.1
-- Eyes-Selenium 3.16.2
-- SeleniumLibrary 3.3.1 (For Web Tests)
-- AppiumLibrary 1.5.0.3 (For Mobile Tests)
+* robotframework >= 3.2.1
+* eyes-selenium >= 4.20.0
+* robotframework-seleniumlibrary
+* robotframework-appiumlibrary
+* robotframework-debuglibrary
 
 ## Installation
 
-The recommended **installation** method is using [pip](http://pip-installer.org):
+python setup.py install
+Alternatively you could download the source code, package it and install using next commands:
 
-    pip install robotframework-eyeslibrary
+    python setup.py sdist
+    pip install dist/robotframework-eyeslibrary4-4.20.tar.gz        
+    
+Note: The zipped package can be shared with users and installed in other locations.
 
-To **update** both the library and all
-its dependencies to the latest version:
+* The resources folder you will see additional files where you can change the settings of your choosing.
+* Set your Applitools API Key and Server URL in the tests > acceptance > resources > common.robot file.
 
-    pip install --upgrade robotframework-eyeslibrary
+## Execute a Test
+* Run Example: `robot tests/acceptance/web.robot`
+Note: You can toggle the web.robot test to use both the ClassicRunner and the Ultra Fast Grid by changing the runner variable. The UFG browsers can be changed in the EyesLibrary > resources > variables.py file. Any Changes to any files in the EyesLibrary folder, you will need to rebuild the package by running the steps in the Installation section. 
 
-To install a **specific version**:
+Default Browsers Set:
 
-    pip install robotframework-eyeslibrary==(DesiredVersion)
+`   conf.add_browser(1200, 800, BrowserType.CHROME)         # Linux Desktop
+    conf.add_browser(1200, 800, BrowserType.SAFARI)         # Mac OS Desktop
+    conf.add_browser(1200, 800, BrowserType.FIREFOX)        # Linux Desktop
+    conf.add_browser(1200, 800, BrowserType.EDGE_CHROMIUM)  # Linux Windows 10
+    conf.add_browser(800, 800, BrowserType.EDGE_CHROMIUM)  # Linux Windows 10
+    conf.add_browser(IosDeviceInfo(IosDeviceName.iPhone_X, ScreenOrientation.PORTRAIT))  # iOS iPhone X simulator
+    conf.add_device_emulation(DeviceName.Nexus_10, ScreenOrientation.PORTRAIT)  # Linux Chrome Desktop
+`
 
-#### Uninstall
-
-To uninstall EyesLibrary use the following pip command:
-
-    pip uninstall robotframework-eyeslibrary
+Note: Currently, only the web.robot, android_app.robot, android_browser.robot, ios_app.robot and ios_browser.robot tests work.
 
 ## Directory Layout
 
@@ -88,11 +108,8 @@ At _tests/acceptance_ directory, you can find Robot Framework tests for:
 
 - Web
 - Android Browser
-- Android Native App
-- Android Hybrid App
 - iOS Browser
 - iOS Native App
-- iOS Hybrid App
 
 Before running the tests, your Applitools API Key must be set in _tests/acceptance/resources/common.robot_, by replacing "YourApplitoolsApiKey" with your own key.
 

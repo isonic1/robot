@@ -29,18 +29,21 @@ def get_match_level(matchlevel):
 
     selected_match_level = None
 
-    if matchlevel.upper() == "STRICT":
+    if matchlevel is None:
         selected_match_level = MatchLevel.STRICT
-    elif matchlevel.upper() == "CONTENT":
-        selected_match_level = MatchLevel.CONTENT
-    elif matchlevel.upper() == "LAYOUT":
-        selected_match_level = MatchLevel.LAYOUT
-    elif matchlevel.upper() == "EXACT":
-        selected_match_level = MatchLevel.EXACT
     else:
-        raise ValueError(
-            "Please select a valid match level: Strict, Content, Layout, Exact"
-        )
+        if matchlevel.upper() == "STRICT":
+            selected_match_level = MatchLevel.STRICT
+        elif matchlevel.upper() == "CONTENT":
+            selected_match_level = MatchLevel.CONTENT
+        elif matchlevel.upper() == "LAYOUT":
+            selected_match_level = MatchLevel.LAYOUT
+        elif matchlevel.upper() == "EXACT":
+            selected_match_level = MatchLevel.EXACT
+        else:
+            raise ValueError(
+                "Please select a valid match level: Strict, Content, Layout, Exact"
+            )
 
     return selected_match_level
 
@@ -89,17 +92,6 @@ def get_selector_strategy(selector):
     return selected_strategy
 
 
-# def manage_logging(enable_eyes_log=True, enable_http_debug_log=None):
-#
-#     # if enable_eyes_log is not None:
-#     logger.set_logger(StdoutLogger(True))
-#
-#     if enable_http_debug_log is True:
-#         six.moves.http_client.HTTPConnection.debuglevel = 1
-#     elif enable_http_debug_log is False:
-#         six.moves.http_client.HTTPConnection.debuglevel = 0
-#
-
 def save_current_properties():
     return {
         "force_full_page_screenshot": variables.eyes.force_full_page_screenshot,
@@ -133,9 +125,6 @@ def update_properties(
 
     if force_full_page_screenshot is not None:
         variables.eyes.force_full_page_screenshot = force_full_page_screenshot
-
-    # if enable_eyes_log is not None or enable_http_debug_log is not None:
-    #     manage_logging(enable_eyes_log, enable_http_debug_log)
 
     if hidescrollbars is not None:
         variables.eyes.hide_scrollbars = hidescrollbars
